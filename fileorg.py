@@ -9,11 +9,11 @@ if os.path.exists(root_folder) == False:
     input("Press Enter to exit...")
     quit()
 
-
 root_content = os.listdir(root_folder)
 root_dirs = []
 root_files = []
 
+# Сбор информации о файлах и директориях
 for item in root_content:
     item_fullpath = os.path.join(root_folder, item)
     if os.path.isdir(item_fullpath):
@@ -21,6 +21,7 @@ for item in root_content:
     elif os.path.isfile(item_fullpath):
         root_files.append(item)
 
+# Определение каждого файла в соотвутствующую директорию
 for file in root_files:
     for dir in root_dirs:
         if dir in file and "_" + dir in file:
