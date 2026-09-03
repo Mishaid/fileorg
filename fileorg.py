@@ -1,6 +1,7 @@
+import time, os, shutil, sys, logging
+
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import time, os, shutil, sys, logging
 
 home_dir = os.path.expanduser('~')
 LOG_FILE_PATH = os.path.join(home_dir, 'FileOrg', 'fileorg.log')
@@ -8,41 +9,52 @@ LOG_FILE_PATH = os.path.join(home_dir, 'FileOrg', 'fileorg.log')
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename=LOG_FILE_PATH, filemode="a", encoding='utf-8')
 
 if sys.platform.startswith('win'):
-    sep = '\\'
     CONFIG_PATH = home_dir + '\\FileOrg\\dirs.txt'
     CONFIG_DIR = home_dir + '\\FileOrg'
-    win = True
-elif sys.platform.startswith('linux'):
-    sep = '/'
+else:
     CONFIG_PATH = home_dir + '/FileOrg/dirs.txt'
     CONFIG_DIR = home_dir + '/FileOrg'
-    win = False
-else:
-    print('Start on unsupported OS!')
-    exit(1)
 
 
 #Config loader
 def load_config(dir_observer) -> None:
     global CONFIG_PATH
+
     dir_observer.unschedule_all()
+
+    if not os.path.exists(CONFIG_PATH):
+        print(f"Config file does not exist: {CONFIG_PATH}")
+        logging.warning(f"Config file does not exist: {CONFIG_PATH}")
+        return
+
     with open(CONFIG_PATH, 'r', encoding='utf-8') as file:
         directories = file.read().splitlines()
+
     for d in directories:
+        if not os.path.isdir(d):
+            logging.warning(f"Directory does not exist: {d}")
+            continue
         dir_observer.schedule(Handler(), path=d, recursive=False)
+        logging.info(f"Watching directory: {d}")
 
 # New file mover
-def file_mover(path: str) -> None:
-    full_path = path.split(sep)
-    if win == True:
-        directory = os.path.join(full_path[0] + '\\', *full_path[1:-1])
-    else:
-        directory = os.path.join(sep, *full_path[:-1])
-    filename = full_path[-1]
-    ext = filename.split('.')[-1]
-    os.chdir(directory)
-    os.makedirs(ext, exist_ok=True)
-    shutil.move(filename, os.path.join(ext, filename))
+def file_mover(path: str):
+
+    directory = os.path.dirname(path)
+    filename = os.path.basename(path)
+
+    # get file extension
+    _, extension = os.path.splitext(filename)
+    extension = extension.lstrip(".")
+    if not extension:
+        extension = "no_extension"
+
+    destination_directory = os.path.join(directory,extension)
+    os.makedirs(destination_directory, exist_ok=True)
+    destination = os.path.join(destination_directory, filename)
+    shutil.move(path, destination)
+
+    logging.info(f"Moved: {path} -> {destination}")
 
 
 # Config update handler
@@ -73,7 +85,12 @@ class Handler(FileSystemEventHandler):
             print(f"New File: {event.src_path}")
             logging.info(f"New File: {event.src_path}")
             time.sleep(0.5)
-            file_mover(str(event.src_path))
+            try:
+                file_mover(str(event.src_path))
+
+            except Exception:
+                print(f"Failed to move file: {event.src_path}")
+                logging.exception(f"Failed to move file: {event.src_path}")
 
 
 # Dirs handler initialization
