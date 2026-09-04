@@ -44,7 +44,7 @@ if errorlevel 1 (
 echo Application copied successfully.
 
 echo.
-echo Setting application to Startup
+echo Setting application to Startup...
 powershell -NoProfile -Command "$s=(New-Object -ComObject WScript.Shell).CreateShortcut('%USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\%APP_NAME%.lnk');$s.TargetPath='%TARGET_EXE% ';$s.Save()"
 
 if errorlevel 1 (

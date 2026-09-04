@@ -1,3 +1,1 @@
-/home/mishaid/spacebox/source/python/fileorg/test/aboba
-/home/mishaid/spacebox/source/python/fileorg/test/h
-/home/mishaid/spacebox/source/python/fileorg/test/hm
+/path/to/dir/to/watch
