@@ -27,12 +27,12 @@ You can review logs in `~/FileOrg/fileorg.log` file.
 
 Download and extract latest release archive and run `setup.bat`. 
 Scrpit will install program files to FileOrg folder in your home and create link in `shell:startup` for running program on logon.  
-It will also ask for a directory that the program should monitor. 
+It will also ask for a folder that the program should monitor. 
 
 > [!WARNING]
 > I Recomend adding `.exe` and `.bat` files to antivirus exceptions before installation.
 
 You can control running program with the Task Manager.
 
-To add a new directory for the program to monitor, just specify full path in `%USERPROFILE%\FileOrg\dirs.txt` (one path one each line).
+To add a new folder for the program to monitor, just specify full path in `%USERPROFILE%\FileOrg\dirs.txt` (one path one each line).
 You can review logs in `%USERPROFILE%\FileOrg\dirs.txt` file.
