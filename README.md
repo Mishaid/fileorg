@@ -3,7 +3,7 @@
 A program that runs as a service to sort files in specified directories.  
 It uses python watchdog module to monitor new files in directories, and does not require a restart after adding new directories to the configuration.
 
-![](.\demo.gif)
+![](demo.gif)
 
 ## Installation and Configuration
 
