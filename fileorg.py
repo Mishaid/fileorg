@@ -1,4 +1,4 @@
-import time, os, shutil, sys, logging
+import time, os, shutil, logging
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -8,13 +8,8 @@ LOG_FILE_PATH = os.path.join(home_dir, 'FileOrg', 'fileorg.log')
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename=LOG_FILE_PATH, filemode="a", encoding='utf-8')
 
-if sys.platform.startswith('win'):
-    CONFIG_PATH = home_dir + '\\FileOrg\\dirs.txt'
-    CONFIG_DIR = home_dir + '\\FileOrg'
-else:
-    CONFIG_PATH = home_dir + '/FileOrg/dirs.txt'
-    CONFIG_DIR = home_dir + '/FileOrg'
-
+CONFIG_PATH = os.path.join(home_dir, 'FileOrg', 'dirs.txt')
+CONFIG_DIR = os.path.join(home_dir, 'FileOrg')
 
 #Config loader
 def load_config(dir_observer) -> None:
